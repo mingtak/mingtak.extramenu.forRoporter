@@ -1,0 +1,35 @@
+<!-- // Menu // -->
+<ul class="sf-menu fixed" id="extramenu"
+    tal:define="registry python:context.portal_registry['mingtak.extramenu.mainmenu.IMainMenu.mainmenu'];
+                level1 python:registry.split()">
+
+  <tal:repeat repeat="title level1">
+    <li class="dropdown">  
+      <a href="about-us-1.html">
+        <span tal:content="python:title.split('||')[0]">Pages</span>
+      </a>
+
+      <ul tal:condition="python:len(title.split('||'))>1">
+        <tal:level2 define="level2 python:title.split('||')[1]">
+          <li class="dropdown" tal:repeat="subtitle python:level2.split(',')">
+            <a href="#">
+              <span tal:replace="python:subtitle.split('=')[0]" />
+              <i class="fa fa-chevron-right pull-right"
+                 tal:condition="python:len(subtitle.split('='))>1"></i>
+            </a>
+
+            <ul tal:condition="python:len(subtitle.split('='))>1">
+              <tal:level3 define="level3 python:subtitle.split('=')[1]">
+                <li tal:repeat="level3title python:level3.split('_')">
+                  <a href="#" tal:content="level3title">3rd level</a>
+                </li>
+              </tal:level3>
+            </ul>
+
+          </li>
+        </tal:level2>
+      </ul>
+
+    </li>
+  </tal:repeat>
+</ul>
