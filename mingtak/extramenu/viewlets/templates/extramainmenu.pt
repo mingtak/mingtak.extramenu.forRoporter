@@ -1,40 +1,64 @@
-<!-- // Menu // -->
-<ul class="sf-menu fixed" id="extramenu"
-    tal:define="registry python:context.portal_registry['mingtak.extramenu.mainmenu.IMainMenu.mainmenu'];
-                level1 python:registry.split('\n')">
-<li tal:attributes="class python:'current' if context.portal_type == 'Plone Site' or context.portal_type == 'cj.product.cjproduct' else ''">
-<a href="/"><span>Home</span></a>
-</li>
+<div class="col-xs-12 col-sm-4 col-md-3 sidemenu-holder"
+     tal:define="registry python:context.portal_registry['mingtak.extramenu.mainmenu.IMainMenu.mainmenu']">
+			<!-- ================================== TOP NAVIGATION ================================== -->
 
-  <tal:repeat repeat="title level1">
-    <li tal:attributes="class python:'dropdown current' if title.split('||')[0].lower().strip() ==  context.title.lower().strip()
-                                                           or title.split('||')[0].lower() in request['URL0'].split('/')[:-1]
-                                                        else 'dropdown'">
-      <a tal:attributes="href python:'/%s' % title.split('||')[0].lower()">
-        <span tal:content="structure python:title.split('||')[0]">Pages</span>
-      </a>
+<div class="side-menu animate-dropdown">
+    <div class="head"><i class="fa fa-list"></i> all departments</div>        
+    <nav class="yamm megamenu-horizontal" role="navigation">
+        <ul class="nav">
 
-      <ul tal:condition="python:len(title.split('||'))>1">
-        <tal:level2 define="level2 python:title.split('||')[1]">
-          <li class="dropdown" tal:repeat="subtitle python:level2.split(',')">
-            <a tal:attributes="href python:'/%s/%s' % (title.split('||')[0].lower(),  subtitle.split('=')[0].lower().replace(' ',''))">
-              <span tal:replace="python:subtitle.split('=')[0]" />
-              <i class="fa fa-chevron-right pull-right"
-                 tal:condition="python:len(subtitle.split('='))>1"></i>
-            </a>
+<tal:getline repeat="line python:registry.split('\n')">
+           <li tal:condition="python:len(line.split('|||'))==1" class="dropdown menu-item">
+             <a tal:attributes="href python:'/%s' % line.lower()" tal:content="line" />
+           </li>
 
-            <ul tal:condition="python:len(subtitle.split('='))>1">
-              <tal:level3 define="level3 python:subtitle.split('=')[1]">
-                <li tal:repeat="level3title python:level3.split('_')">
-                  <a href="#" tal:content="level3title">3rd level</a>
-                </li>
-              </tal:level3>
-            </ul>
+<tal:getcatalog tal:condition="python:len(line.split('|||'))>1">
 
-          </li>
-        </tal:level2>
-      </ul>
+            <li class="dropdown menu-item">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" tal:content="python:line.split('|||')[0]" />
+                <ul class="dropdown-menu mega-menu">
+                    <li class="yamm-content">
+                        <!-- ================================== MEGAMENU VERTICAL ================================== -->
+<div class="row">
+    <div class="col-xs-12 col-lg-4">
+        <ul>
+            <li tal:repeat="item python:line.split('|||')[2].split(',')">
+              <a tal:attributes="href python:'/productlist?catalog=%s&name=%s' % (item.replace(' ','').lower(), item.replace(' ','_').lower())";
+                 tal:content="item" />
+            </li>
+        </ul>
+    </div>
+<!--
+    <div class="col-xs-12 col-lg-4">
+        <ul>
+            <li><a href="#">Power Supplies Power</a></li>
+            <li><a href="#">Power Supply Testers Sound</a></li>
+            <li><a href="#">Sound Cards (Internal)</a></li>
+            <li><a href="#">Video Capture &amp; TV Tuner Cards</a></li>
+            <li><a href="#">Other</a></li>
+        </ul>
+    </div>
+-->
+    <div class="dropdown-banner-holder">
+        <a href="#" tal:define="image python:context.portal_catalog(id=line.split('|||')[1])[0].getObject()">
+          <img tal:replace="structure image/@@images/image" />
+        </a>
+    </div>
 
-    </li>
-  </tal:repeat>
-</ul>
+
+
+
+</div>
+<!-- ================================== MEGAMENU VERTICAL ================================== -->                        
+                    </li>
+                </ul>
+            </li><!-- /.menu-item -->
+</tal:getcatalog>
+
+</tal:getline>
+
+        </ul><!-- /.nav -->
+    </nav><!-- /.megamenu-horizontal -->
+</div><!-- /.side-menu -->
+<!-- ================================== TOP NAVIGATION : END ================================== -->
+		</div><!-- /.sidemenu-holder -->
