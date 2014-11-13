@@ -3,13 +3,14 @@
 			<!-- ================================== TOP NAVIGATION ================================== -->
 
 <div class="side-menu animate-dropdown">
-    <div class="head"><i class="fa fa-list"></i> all departments</div>        
+    <div class="head"><i class="fa fa-list"></i> all categories</div>        
     <nav class="yamm megamenu-horizontal" role="navigation">
         <ul class="nav">
 
 <tal:getline repeat="line python:registry.split('\n')">
            <li tal:condition="python:len(line.split('|||'))==1" class="dropdown menu-item">
-             <a tal:attributes="href python:'/%s' % line.lower()" tal:content="line" />
+             <a tal:attributes="href python:'/productlist?catalog=%s&name=%s' %
+                                             (line.replace(' ','').lower(), line.replace(' ','_').lower())" tal:content="line" />
            </li>
 
 <tal:getcatalog tal:condition="python:len(line.split('|||'))>1">
@@ -19,26 +20,15 @@
                 <ul class="dropdown-menu mega-menu">
                     <li class="yamm-content">
                         <!-- ================================== MEGAMENU VERTICAL ================================== -->
-<div class="row">
-    <div class="col-xs-12 col-lg-4">
-        <ul>
-            <li tal:repeat="item python:line.split('|||')[2].split(',')">
+<div class="row" tal:define="catalogList python:line.split('|||')[2].split(',')">
+    <div class="col-lg-4" tal:repeat="catalogColumn python:range(int(modules['math'].ceil(len(catalogList)/10.0)))">
+        <ul tal:define="startItem python:repeat['catalogColumn'].index * 10">
+            <li tal:repeat="item python:catalogList[startItem: startItem+10]">
               <a tal:attributes="href python:'/productlist?catalog=%s&name=%s' % (item.replace(' ','').lower(), item.replace(' ','_').lower())";
                  tal:content="item" />
             </li>
         </ul>
     </div>
-<!--
-    <div class="col-xs-12 col-lg-4">
-        <ul>
-            <li><a href="#">Power Supplies Power</a></li>
-            <li><a href="#">Power Supply Testers Sound</a></li>
-            <li><a href="#">Sound Cards (Internal)</a></li>
-            <li><a href="#">Video Capture &amp; TV Tuner Cards</a></li>
-            <li><a href="#">Other</a></li>
-        </ul>
-    </div>
--->
     <div class="dropdown-banner-holder">
         <a href="#" tal:define="image python:context.portal_catalog(id=line.split('|||')[1])[0].getObject()">
           <img tal:replace="structure image/@@images/image" />
