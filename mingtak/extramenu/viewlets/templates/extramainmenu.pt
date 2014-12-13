@@ -21,9 +21,11 @@
                     <li class="yamm-content">
                         <!-- ================================== MEGAMENU VERTICAL ================================== -->
 <div class="row" tal:define="catalogList python:line.split('|||')[2].split(',')">
-    <div class="col-lg-4" tal:repeat="catalogColumn python:range(int(modules['math'].ceil(len(catalogList)/10.0)))">
-        <ul tal:define="startItem python:repeat['catalogColumn'].index * 10">
-            <li tal:repeat="item python:catalogList[startItem: startItem+10]">
+    <div class="col-lg-4" tal:repeat="catalogColumn python:range(2)">
+        <ul tal:define="startItem python:repeat['catalogColumn'].index *
+                                         ((len(catalogList) / 2) if len(catalogList)%2==0 else ((len(catalogList) / 2) +1))">
+            <li tal:repeat="item python:catalogList[startItem:
+                                        startItem + ((len(catalogList) / 2) if len(catalogList)%2==0 else ((len(catalogList) / 2) +1))]">
               <a tal:attributes="href python:'/productlist?catalog=%s&name=%s' % (item.replace(' ','').lower(), item.replace(' ','_').lower())";
                  tal:content="item" />
             </li>
